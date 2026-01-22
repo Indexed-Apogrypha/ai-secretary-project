@@ -1,0 +1,22 @@
+{
+  "name": "part1-cli-bot",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "CLI chatbot using Claude API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "claude",
+    "AI",
+    "CLI"
+  ],
+  "author": "Matthew Harper",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "dotenv": "^17.2.3"
+  }
+}
