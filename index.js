@@ -2,11 +2,32 @@ import Anthropic from "@anthropic-ai/sdk";
 import dotenv from "dotenv";
 import readline from "readline";
 
+
+//==============================================================================//
+
+
+
 //loads environment variables from .env
 dotenv.config();
 
 // Initialize Anthropic client with API key from environment variables
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// Define system prompt for the AI secretary role
+const SYSTEM_PROMPT = `You are a professional personal secretary assistant. Your role is to:
+
+- Draft professional emails, messages, and documents
+- Create organized task lists and agendas
+- Maintain a polite, professional, and helpful tone
+- Be concise but thorough
+- Anticipate needs and offer proactive suggestions
+
+When drafting communications, use proper formatting and structure. When creating lists, organize them logically with priorities.`;
+
+
+
+//==============================================================================//
+
 
 // Function to display token usage and cost
 function displayTokenUsage(usage) {
@@ -46,12 +67,15 @@ function showHelp() {
 }
 
 
+//==============================================================================//
+
+
 async function main(){
     
 
     // Welcome message
     console.log("Welcome to the AI Secretary CLI!");
-    console.log('Type your message and press Enter. Type "exit" to quit.\n');
+    console.log('Type your message and press Enter. Type "exit" to quit.\n\n');
 
 
     // Initialize conversation history array
@@ -70,23 +94,21 @@ async function main(){
     rl.on('line', async (userInput) => {
 
 
-        // handle exit command
+        // handle 'exit' command
         if (userInput.toLowerCase() === "exit") {
             console.log("Goodbye!");
             rl.close();
             return;
         }
         
-
-        // Handle help command
+        // Handle 'help' command
         if (userInput.toLowerCase() === 'help') {
             showHelp();
             rl.prompt();
             return;
         }
-
         
-        // Handle clear command
+        // Handle 'clear' command
         if (userInput.toLowerCase() === 'clear') {
             conversationHistory.length = 0;
             console.log('\n✅ Conversation history cleared\n');
@@ -94,8 +116,7 @@ async function main(){
             return;
         }
 
-
-        // Handle tokens command
+        // Handle 'tokens' command
         if (userInput.toLowerCase() === 'tokens') {
             const totalTokens = conversationHistory.reduce((sum, msg) => {
                 return sum + Math.ceil(msg.content.length / 4);
@@ -106,9 +127,9 @@ async function main(){
         }
 
 
+
         // Add user message to history
         conversationHistory.push({ role: 'user', content: userInput });
-
 
         // Try-catch: API request and response handling
         try {
@@ -121,6 +142,7 @@ async function main(){
             const message = await anthropic.messages.create({
                 model: "claude-sonnet-4-20250514",
                 max_tokens: 1024,
+                system: SYSTEM_PROMPT,
                 messages: conversationHistory                              
             });
 
@@ -135,6 +157,9 @@ async function main(){
 
             // Display token usage            
             displayTokenUsage(message.usage);
+            
+            // add seperator line for readability
+            console.log("==========================================\n");
 
             // Prompt the user for the next input                       
             rl.prompt();
@@ -144,8 +169,37 @@ async function main(){
         catch (error) {  
 
 
-            //general error handling          
-            console.error("Error:", error.message);
+            // Remove failed user message from history
+            conversationHistory.pop();
+            
+            // Clear loading indicator
+            process.stdout.write('\r\x1b[K');
+            
+
+
+            // Handle specific error types
+            if (error.status === 401) {
+                console.error('\n❌ Authentication Error: Invalid API key');
+                console.log('Please check your .env file\n');
+            } 
+                        
+            else if (error.status === 429) {
+                console.error('\n❌ Rate Limit: Too many requests');
+                console.log('Please wait a moment before trying again\n');
+            } 
+            
+            else if (error.status === 500) {
+                console.error('\n❌ Server Error: Claude API is having issues');
+                console.log('Please try again in a moment\n');
+            } 
+            
+            else {
+                console.error('\n❌ Error:', error.message, '\n');
+            }
+            
+
+            // Prompt the user for the next input
+            rl.prompt();
 
 
         }
