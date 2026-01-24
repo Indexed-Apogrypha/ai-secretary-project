@@ -1,3 +1,8 @@
+//=============================================
+// IMPORTS
+// Import necessary modules and configurations
+//=============================================
+
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -5,6 +10,12 @@ import dotenv from 'dotenv';
 // Import our config clients
 import { supabase } from './config/supabase.js';
 import { anthropic } from './config/anthropic.js';
+
+// Import auth routes
+import authRoutes from './routes/auth.js';
+
+// import authentication middleware
+import { authenticateToken } from './middleware/auth.js';
 
 
 
@@ -14,36 +25,71 @@ import { anthropic } from './config/anthropic.js';
 //=============================================
 
 
+// Load environment variables
+dotenv.config();
 
-  // Load environment variables
-  dotenv.config();
+// Initialize Express app
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-  // Initialize Express app
-  const app = express();
-  const PORT = process.env.PORT || 3000;
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-  // Middleware
-  app.use(cors());
-  app.use(express.json());
+// Health check endpoint
+app.get('/health', (req, res) => {
+res.json({ status: 'ok', message: 'API is running' });
+});
 
-  // Health check endpoint
-  app.get('/health', (req, res) => {
-  res.json({ status: 'ok', message: 'API is running' });
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.send('Test works!');
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/health`);
+});
+
+
+
+
+// ============================================
+// PROTECTED ROUTE TEST
+// This endpoint requires a valid JWT token
+// ============================================
+
+
+
+app.get('/protected', authenticateToken, async (req, res) => {
+  // If we get here, the token was valid!
+  // req.user contains the authenticated user's info
+  res.json({
+    message: 'Access granted!',
+    user: {
+      id: req.user.id,
+      email: req.user.email
+    }
   });
-
-  // Test endpoint
-  app.get('/test', (req, res) => {
-    res.send('Test works!');
-  });
-
-  // Start server
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  });
+});
 
 
-//=============================================
+
+
+
+
+//===========================================
+// AUTH ROUTES
+// Handles user registration and login
+//===========================================
+
+
+
+
+app.use('/auth', authRoutes);
+
+
 
 
 
@@ -82,8 +128,6 @@ app.get('/test-db', async (req, res) => {
   }
 });
 
-//=============================================
-
 
 
 //===========================================
@@ -116,4 +160,3 @@ app.get('/test-ai', async (req, res) => {
   }
 });
 
-//===========================================
