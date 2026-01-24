@@ -14,8 +14,15 @@ import { anthropic } from './config/anthropic.js';
 // Import auth routes
 import authRoutes from './routes/auth.js';
 
+// Import conversation routes
+import conversationRoutes from './routes/conversations.js';
+
 // import authentication middleware
 import { authenticateToken } from './middleware/auth.js';
+
+// Import message routes
+import messageRoutes from './routes/messages.js';
+
 
 
 
@@ -25,28 +32,28 @@ import { authenticateToken } from './middleware/auth.js';
 //=============================================
 
 
-// Load environment variables
+// 1. Load environment variables
 dotenv.config();
 
-// Initialize Express app
+// 2. Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// 3. Activate Middleware
 app.use(cors());
 app.use(express.json());
 
-// Health check endpoint
+// 4. Health check endpoint
 app.get('/health', (req, res) => {
 res.json({ status: 'ok', message: 'API is running' });
 });
 
-// Test endpoint
+// 5. Test endpoint
 app.get('/test', (req, res) => {
   res.send('Test works!');
 });
 
-// Start server
+// 6. Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
@@ -59,7 +66,6 @@ app.listen(PORT, () => {
 // PROTECTED ROUTE TEST
 // This endpoint requires a valid JWT token
 // ============================================
-
 
 
 app.get('/protected', authenticateToken, async (req, res) => {
@@ -78,17 +84,22 @@ app.get('/protected', authenticateToken, async (req, res) => {
 
 
 
-
 //===========================================
-// AUTH ROUTES
-// Handles user registration and login
+// REGISTER ROUTES
+// Handles user registration, login, and conversations
 //===========================================
 
 
-
-
+// register authentication routes
 app.use('/auth', authRoutes);
 
+// Register conversation routes
+app.use('/conversations', conversationRoutes);
+// Note: conversationRoutes applies auth middleware internally
+
+// Register message routes
+app.use('/conversations', messageRoutes);
+// Note: messages are nested under conversations
 
 
 
