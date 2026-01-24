@@ -4,12 +4,12 @@ A command-line interface chatbot powered by Claude AI that acts as your personal
 
 ## Features
 
-- ?? Interactive conversation with Claude AI
-- ?? Maintains conversation context across multiple turns
-- ?? Drafts emails, creates task lists, and more
-- ?? Tracks token usage and costs
-- ??? Robust error handling
-- ?? Professional CLI interface
+- ✅ Interactive conversation with Claude AI
+- ✅ Maintains conversation context across multiple turns
+- ✅ Drafts emails, creates task lists, and more
+- ✅ Tracks token usage and costs
+- ✅ Robust error handling
+- ✅ Professional CLI interface
 
 ## Prerequisites
 

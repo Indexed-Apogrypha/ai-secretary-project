@@ -9,10 +9,10 @@ Learning project: Build a full-stack SaaS app with Claude API integration.
 - `docs/` - Documentation and notes
 
 ## Progress
-- [ ] Part 0: Environment Setup
-- [ ] Part 1: CLI Secretary Bot
-- [ ] Part 2: Backend API
-- [ ] Part 3: Full-Stack Web App
+- ✅ Part 0: Environment Setup
+- ✅ Part 1: CLI Secretary Bot
+- ⏹️ Part 2: Backend API
+- ⏹️ Part 3: Full-Stack Web App
 
 ## Learning Goals
 - LLM API integration
