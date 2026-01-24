@@ -43,7 +43,7 @@ function displayTokenUsage(usage) {
     console.log(`\n[[ Tokens: ${totalTokens} (in: ${inputTokens}, out: ${outputTokens})  |  Cost: $${totalCost.toFixed(6)} ]]\n`);
 }
 
-
+// Function to show help message
 function showHelp() {
     console.log(`
         

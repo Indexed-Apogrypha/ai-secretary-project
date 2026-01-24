@@ -1,0 +1,26 @@
+{
+  "name": "part2-backend-api",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend API for AI Secretary",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "api",
+    "express",
+    "claude",
+    "supabase"
+  ],
+  "author": "Matthew Harper",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@supabase/supabase-js": "^2.91.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^4.22.1"
+  }
+}
